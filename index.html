@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Poll</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="card">
+        <p class="eyebrow">Quick Poll</p>
+        <h1>Which feature should we ship next?</h1>
+        <p class="subtitle">Cast your vote and see live-style progress instantly.</p>
+
+        <form id="poll-form" class="poll">
+          <label class="option">
+            <input type="radio" name="vote" value="Realtime analytics" />
+            <span>Realtime analytics</span>
+          </label>
+          <label class="option">
+            <input type="radio" name="vote" value="Dark mode" />
+            <span>Dark mode</span>
+          </label>
+          <label class="option">
+            <input type="radio" name="vote" value="AI summaries" />
+            <span>AI summaries</span>
+          </label>
+          <button type="submit">Submit vote</button>
+        </form>
+
+        <p id="result" class="result" aria-live="polite"></p>
+      </section>
+    </main>
+
+    <script src="./script.js"></script>
+  </body>
+</html>
