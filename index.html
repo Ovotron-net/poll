@@ -1,130 +1,683 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cybersecurity Training Poll</title>
-  <style>
-    :root {
-      color-scheme: dark;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Core Network | Tier-1 Visualization</title>
+    <style>
+        :root {
+            --bg-0: #040b13;
+            --bg-1: #0d1f32;
+            --panel: rgba(8, 21, 35, 0.74);
+            --line: rgba(95, 197, 255, 0.32);
+            --text: #d5e8ff;
+            --muted: #88a6c7;
+            --accent: #31ffc7;
+            --accent-warm: #ffb870;
+        }
 
-    body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: Arial, Helvetica, sans-serif;
-      background: #0f172a;
-      color: #e2e8f0;
-      display: grid;
-      place-items: center;
-      padding: 24px;
-      box-sizing: border-box;
-    }
+        * {
+            box-sizing: border-box;
+        }
 
-    .poll {
-      width: 100%;
-      max-width: 900px;
-      background: #111827;
-      border: 1px solid #334155;
-      border-radius: 12px;
-      padding: 24px;
-      box-sizing: border-box;
-    }
+        body {
+            margin: 0;
+            overflow: hidden;
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at 18% 15%, rgba(49, 255, 199, 0.15), transparent 35%),
+                radial-gradient(circle at 80% 78%, rgba(255, 184, 112, 0.12), transparent 30%),
+                linear-gradient(155deg, var(--bg-1), var(--bg-0) 56%);
+            font-family: "Space Mono", "Consolas", "Courier New", monospace;
+            color: var(--text);
+        }
 
-    h1 {
-      margin-top: 0;
-      font-size: 1.4rem;
-      line-height: 1.4;
-    }
+        canvas {
+            position: fixed;
+            inset: 0;
+            display: block;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            filter: contrast(1.06) saturate(1.15);
+        }
 
-    p {
-      margin-bottom: 18px;
-      line-height: 1.5;
-    }
+        .brand-watermark {
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 50vw;
+            height: 50vh;
+            opacity: 0.12;
+            pointer-events: none;
+            z-index: 1;
+            object-fit: contain;
+            mix-blend-mode: screen;
+            filter: drop-shadow(0 0 12px rgba(49, 255, 199, 0.24));
+        }
 
-    .options {
-      display: grid;
-      gap: 12px;
-      margin-bottom: 18px;
-    }
+        .hud {
+            position: fixed;
+            top: auto;
+            bottom: 16px;
+            left: auto;
+            right: 16px;
+            width: min(440px, calc(100vw - 32px));
+            padding: 14px 14px 10px;
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            background: var(--panel);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 14px 36px rgba(0, 0, 0, 0.34);
+            z-index: 2;
+            transition: transform 0.32s ease, opacity 0.32s ease;
+        }
 
-    label {
-      display: block;
-      border: 1px solid #334155;
-      border-radius: 8px;
-      padding: 12px;
-      cursor: pointer;
-      line-height: 1.5;
-      transition: border-color 0.2s ease, background-color 0.2s ease;
-    }
+        .hud.collapsed {
+            transform: translateY(calc(100% + 20px));
+            opacity: 0;
+            pointer-events: none;
+        }
 
-    label:hover {
-      border-color: #60a5fa;
-      background: #0b1222;
-    }
+        .hud-launcher {
+            position: fixed;
+            top: auto;
+            bottom: 16px;
+            right: 18px;
+            z-index: 3;
+            appearance: none;
+            border: 0;
+            background: rgba(9, 23, 37, 0.86);
+            color: var(--text);
+            border-radius: 999px;
+            padding: 8px 12px;
+            font: inherit;
+            font-size: 11px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            cursor: pointer;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            transform: translateX(-8px);
+            pointer-events: none;
+            transition: opacity 0.24s ease, transform 0.24s ease, background 0.2s ease;
+        }
 
-    input[type="radio"] {
-      margin-right: 8px;
-      transform: translateY(1px);
-    }
+        .hud-launcher:hover {
+            background: rgba(17, 39, 60, 0.92);
+        }
 
-    button {
-      border: 0;
-      border-radius: 8px;
-      padding: 10px 16px;
-      font-weight: 700;
-      color: #0f172a;
-      background: #60a5fa;
-      cursor: pointer;
-    }
+        .hud-launcher.visible {
+            opacity: 1;
+            transform: translateX(0);
+            pointer-events: auto;
+        }
 
-    #result {
-      margin-top: 14px;
-      font-weight: 700;
-      color: #93c5fd;
-      min-height: 20px;
-    }
-  </style>
+        .hud-header {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .hud-actions {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .title {
+            font-size: 12px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin: 0;
+        }
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 8px;
+            border: 1px solid rgba(49, 255, 199, 0.42);
+            border-radius: 999px;
+            font-size: 11px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--accent);
+            background: rgba(49, 255, 199, 0.08);
+        }
+
+        .hud-close {
+            appearance: none;
+            border: 0;
+            background: rgba(149, 182, 223, 0.16);
+            color: var(--text);
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            font: inherit;
+            font-size: 16px;
+            line-height: 1;
+            cursor: pointer;
+            transition: background 0.2s ease, transform 0.2s ease;
+        }
+
+        .hud-close:hover {
+            background: rgba(149, 182, 223, 0.28);
+            transform: scale(1.05);
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--accent);
+            box-shadow: 0 0 10px var(--accent);
+            animation: pulse 1.2s infinite;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .stat {
+            border: 1px solid rgba(149, 182, 223, 0.25);
+            border-radius: 10px;
+            padding: 8px;
+            background: rgba(2, 10, 20, 0.52);
+        }
+
+        .stat-label {
+            display: block;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--muted);
+            margin-bottom: 4px;
+        }
+
+        .stat-value {
+            font-size: 14px;
+            color: var(--text);
+        }
+
+        .controls {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .btn {
+            appearance: none;
+            border: 1px solid rgba(149, 182, 223, 0.35);
+            background: rgba(15, 32, 52, 0.8);
+            color: var(--text);
+            border-radius: 10px;
+            padding: 7px 11px;
+            font: inherit;
+            font-size: 12px;
+            cursor: pointer;
+            transition: transform 0.15s ease, border-color 0.2s ease, background 0.2s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            border-color: rgba(49, 255, 199, 0.52);
+            background: rgba(16, 42, 67, 0.88);
+        }
+
+        .btn.primary {
+            border-color: rgba(49, 255, 199, 0.42);
+            color: #d8fff3;
+            background: rgba(20, 69, 63, 0.55);
+        }
+
+        .logs {
+            border-top: 1px solid rgba(149, 182, 223, 0.24);
+            padding-top: 8px;
+            max-height: 158px;
+            overflow: auto;
+        }
+
+        .log-entry {
+            font-size: 11px;
+            color: #a9c4e4;
+            padding: 2px 0;
+            opacity: 0.9;
+            animation: reveal 260ms ease;
+        }
+
+        .tip {
+            font-size: 10px;
+            color: #6f8eaf;
+            margin-top: 6px;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 0.6;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.5;
+                transform: scale(0.82);
+            }
+        }
+
+        @keyframes reveal {
+            from {
+                opacity: 0;
+                transform: translateY(-3px);
+            }
+
+            to {
+                opacity: 0.9;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 760px) {
+            .hud {
+                top: auto;
+                bottom: 10px;
+                left: auto;
+                right: 10px;
+                width: calc(100vw - 20px);
+            }
+
+            .hud.collapsed {
+                transform: translateY(calc(100% + 20px));
+            }
+
+            .hud-launcher {
+                top: auto;
+                bottom: 10px;
+                right: 10px;
+            }
+
+            .stats {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .controls {
+                flex-wrap: wrap;
+            }
+
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+
+            .status-dot,
+            .log-entry,
+            .btn,
+            .hud-close {
+                animation: none !important;
+                transition: none !important;
+            }
+        }
+    </style>
 </head>
 <body>
-  <main class="poll">
-    <h1>We are launching a foundational cybersecurity training track focused on conceptual strategy, adversary tactics, and vulnerability analysis.</h1>
-    <p>Which core module should we break down first?</p>
-    <form id="pollForm">
-      <div class="options">
-        <label>
-          <input type="radio" name="module" value="Active &amp; Passive Reconnaissance: Comprehensive footprinting and OSINT strategies used to map target infrastructure" />
-          Active &amp; Passive Reconnaissance: Comprehensive footprinting and OSINT strategies used to map target infrastructure
-        </label>
-        <label>
-          <input type="radio" name="module" value="Web Application Flaws: Analyzing critical vulnerabilities (e.g., Broken Access Control, Injections) and their architectural impact." />
-          Web Application Flaws: Analyzing critical vulnerabilities (e.g., Broken Access Control, Injections) and their architectural impact.
-        </label>
-        <label>
-          <input type="radio" name="module" value="Adversary Tactics &amp; Persistence: Demystifying the hacker mindset through real-world vectors (e.g., PAM backdoors, SSH backdoors, APT groups)." />
-          Adversary Tactics &amp; Persistence: Demystifying the hacker mindset through real-world vectors (e.g., PAM backdoors, SSH backdoors, APT groups).
-        </label>
-        <label>
-          <input type="radio" name="module" value="I am ready to learn the fundamentals, just drop the schedule!" />
-          I am ready to learn the fundamentals, just drop the schedule!
-        </label>
-      </div>
-      <button type="submit">Submit vote</button>
-      <div id="result" aria-live="polite"></div>
-    </form>
-  </main>
+    <section class="hud collapsed" aria-label="Tier-1 network telemetry">
+        <div class="hud-header">
+            <p class="title">Global Core Network / Tier-1 Fabric</p>
+            <div class="hud-actions">
+                <div class="status">
+                    <span class="status-dot" aria-hidden="true"></span>
+                    Operational
+                </div>
+                <button id="hudClose" class="hud-close" type="button" aria-label="Close telemetry panel">x</button>
+            </div>
+        </div>
 
-  <script>
-    const form = document.getElementById("pollForm");
-    const result = document.getElementById("result");
+        <div class="stats">
+            <div class="stat">
+                <span class="stat-label">Traffic</span>
+                <strong id="traffic" class="stat-value">61.8 TB/s</strong>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Latency</span>
+                <strong id="latency" class="stat-value">9.2 ms</strong>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Packet Rate</span>
+                <strong id="packetRate" class="stat-value">14.3 M/s</strong>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Active Nodes</span>
+                <strong id="nodeCount" class="stat-value">0</strong>
+            </div>
+        </div>
 
-    form.addEventListener("submit", (event) => {
-      event.preventDefault();
-      const selected = form.querySelector('input[name="module"]:checked');
-      result.textContent = selected
-        ? `Thanks! You selected: ${selected.value}`
-        : "Please select an option before submitting.";
-    });
-  </script>
+        <div class="controls">
+            <button id="toggle" class="btn primary" type="button">Pause Scan</button>
+            <button id="burst" class="btn" type="button">Inject Burst</button>
+        </div>
+
+        <div id="logs" class="logs" role="log" aria-live="polite" aria-relevant="additions"></div>
+        <div class="tip">Tip: press P to pause/resume.</div>
+    </section>
+    <button id="hudLauncher" class="hud-launcher visible" type="button"
+        aria-label="Open telemetry panel">Settings</button>
+
+    <canvas id="canvas" aria-hidden="true">
+        Your browser does not support HTML5 canvas.
+    </canvas>
+
+    <img class="brand-watermark" src="ovotron.png" alt="" aria-hidden="true" />
+
+    <script>
+        const canvas = document.getElementById("canvas");
+        const ctx = canvas.getContext("2d", { alpha: false });
+
+        const trafficEl = document.getElementById("traffic");
+        const latencyEl = document.getElementById("latency");
+        const packetRateEl = document.getElementById("packetRate");
+        const nodeCountEl = document.getElementById("nodeCount");
+        const logContainer = document.getElementById("logs");
+        const toggleBtn = document.getElementById("toggle");
+        const burstBtn = document.getElementById("burst");
+        const hud = document.querySelector(".hud");
+        const hudLauncher = document.getElementById("hudLauncher");
+        const hudCloseBtn = document.getElementById("hudClose");
+
+        const settings = {
+            color: "49, 255, 199",
+            linkColor: "95, 197, 255",
+            connectionDist: 170,
+            packetChance: 0.00085,
+            maxPackets: 520
+        };
+
+        const state = {
+            width: 0,
+            height: 0,
+            dpr: Math.min(window.devicePixelRatio || 1, 2),
+            particles: [],
+            packets: [],
+            running: true,
+            reducedMotion: window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+            lastStatsUpdate: 0
+        };
+
+        const HUD_AUTO_HIDE_MS = 4200;
+        let hudHideTimer = null;
+
+        const logMessages = [
+            "CONNECTION OPENED: [UDP] 192.168.1.1 > 10.0.0.45",
+            "PACKET LOSS DETECTED: NODE_77",
+            "HANDSHAKE SUCCESS: [TLS] TOKYO_CORE",
+            "ROUTE REBALANCE: LATENCY OPTIMIZATION",
+            "NODE HIT: 200 OK (8ms)",
+            "FIREWALL BLOCK: UNAUTHORIZED IP",
+            "DATA STREAM: MIRROR JOB 88%"
+        ];
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * state.width;
+                this.y = Math.random() * state.height;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+                this.size = 0.9 + Math.random() * 1.6;
+            }
+
+            update(dt) {
+                this.x += this.vx * dt;
+                this.y += this.vy * dt;
+
+                if (this.x < 0 || this.x > state.width) {
+                    this.vx *= -1;
+                    this.x = Math.max(0, Math.min(state.width, this.x));
+                }
+                if (this.y < 0 || this.y > state.height) {
+                    this.vy *= -1;
+                    this.y = Math.max(0, Math.min(state.height, this.y));
+                }
+            }
+
+            draw() {
+                ctx.fillStyle = `rgba(${settings.color}, 0.86)`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        class Packet {
+            constructor(startNode, endNode) {
+                this.start = startNode;
+                this.end = endNode;
+                this.progress = 0;
+                this.speed = 0.012 + Math.random() * 0.032;
+            }
+
+            update(dt) {
+                this.progress += this.speed * dt;
+            }
+
+            draw() {
+                const x = this.start.x + (this.end.x - this.start.x) * this.progress;
+                const y = this.start.y + (this.end.y - this.start.y) * this.progress;
+                ctx.fillStyle = "#ffffff";
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = "#31ffc7";
+                ctx.fillRect(x - 1.9, y - 1.9, 3.8, 3.8);
+                ctx.shadowBlur = 0;
+            }
+        }
+
+        function addLog(customMessage) {
+            const entry = document.createElement("div");
+            entry.className = "log-entry";
+            const message = customMessage || logMessages[Math.floor(Math.random() * logMessages.length)];
+            entry.textContent = `> ${message}`;
+            logContainer.prepend(entry);
+            if (logContainer.children.length > 9) {
+                logContainer.lastElementChild.remove();
+            }
+        }
+
+        function updateStats() {
+            trafficEl.textContent = `${(Math.random() * 22 + 51).toFixed(1)} TB/s`;
+            latencyEl.textContent = `${(Math.random() * 5 + 6.2).toFixed(1)} ms`;
+            packetRateEl.textContent = `${(Math.random() * 3 + 12.5).toFixed(1)} M/s`;
+            nodeCountEl.textContent = String(state.particles.length);
+        }
+
+        function showHud() {
+            hud.classList.remove("collapsed");
+            hudLauncher.classList.remove("visible");
+        }
+
+        function hideHud() {
+            hud.classList.add("collapsed");
+            hudLauncher.classList.add("visible");
+        }
+
+        function scheduleHudAutoHide() {
+            if (hudHideTimer) {
+                clearTimeout(hudHideTimer);
+            }
+
+            if (hud.classList.contains("collapsed")) {
+                return;
+            }
+
+            hudHideTimer = setTimeout(() => {
+                hideHud();
+            }, HUD_AUTO_HIDE_MS);
+        }
+
+        function getNodeCount() {
+            const area = window.innerWidth * window.innerHeight;
+            const scale = Math.max(80, Math.min(190, Math.round(area / 14500)));
+            return state.reducedMotion ? Math.round(scale * 0.6) : scale;
+        }
+
+        function spawnBurst() {
+            for (let i = 0; i < 24; i += 1) {
+                const start = state.particles[Math.floor(Math.random() * state.particles.length)];
+                const end = state.particles[Math.floor(Math.random() * state.particles.length)];
+                if (start && end && start !== end && state.packets.length < settings.maxPackets) {
+                    state.packets.push(new Packet(start, end));
+                }
+            }
+            addLog("BANDWIDTH BURST ROUTED THROUGH TIER-1 CORE");
+        }
+
+        function resize() {
+            state.width = window.innerWidth;
+            state.height = window.innerHeight;
+            canvas.width = Math.floor(state.width * state.dpr);
+            canvas.height = Math.floor(state.height * state.dpr);
+            canvas.style.width = `${state.width}px`;
+            canvas.style.height = `${state.height}px`;
+            ctx.setTransform(state.dpr, 0, 0, state.dpr, 0, 0);
+
+            state.particles = Array.from({ length: getNodeCount() }, () => new Particle());
+            state.packets = [];
+            updateStats();
+        }
+
+        function drawBackground() {
+            ctx.fillStyle = "rgba(4, 11, 19, 0.28)";
+            ctx.fillRect(0, 0, state.width, state.height);
+        }
+
+        function animate(timestamp) {
+            const deltaMs = Math.min(36, timestamp - (animate.lastTime || timestamp));
+            animate.lastTime = timestamp;
+            const dt = deltaMs / 16.67;
+
+            if (state.running) {
+                drawBackground();
+                const maxDistSq = settings.connectionDist * settings.connectionDist;
+
+                for (let i = 0; i < state.particles.length; i += 1) {
+                    const a = state.particles[i];
+                    for (let j = i + 1; j < state.particles.length; j += 1) {
+                        const b = state.particles[j];
+                        const dx = a.x - b.x;
+                        const dy = a.y - b.y;
+                        const distSq = dx * dx + dy * dy;
+                        if (distSq < maxDistSq) {
+                            const dist = Math.sqrt(distSq);
+                            const opacity = (1 - dist / settings.connectionDist) * 0.26;
+                            ctx.strokeStyle = `rgba(${settings.linkColor}, ${opacity})`;
+                            ctx.lineWidth = 1;
+                            ctx.beginPath();
+                            ctx.moveTo(a.x, a.y);
+                            ctx.lineTo(b.x, b.y);
+                            ctx.stroke();
+
+                            if (!state.reducedMotion && Math.random() < settings.packetChance * dt && state.packets.length < settings.maxPackets) {
+                                state.packets.push(new Packet(a, b));
+                            }
+                        }
+                    }
+                }
+
+                state.packets = state.packets.filter((packet) => packet.progress < 1);
+                state.packets.forEach((packet) => {
+                    packet.update(dt);
+                    packet.draw();
+                });
+
+                state.particles.forEach((particle) => {
+                    particle.update(dt);
+                    particle.draw();
+                });
+
+                if (!state.reducedMotion && Math.random() > 0.992) {
+                    ctx.fillStyle = "rgba(49, 255, 199, 0.03)";
+                    ctx.fillRect(0, 0, state.width, state.height);
+                }
+            }
+
+            if (timestamp - state.lastStatsUpdate > 700) {
+                updateStats();
+                state.lastStatsUpdate = timestamp;
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        function setRunning(nextRunning) {
+            state.running = nextRunning;
+            toggleBtn.textContent = state.running ? "Pause Scan" : "Resume Scan";
+            addLog(state.running ? "SCAN LOOP RESUMED" : "SCAN LOOP PAUSED");
+            scheduleHudAutoHide();
+        }
+
+        toggleBtn.addEventListener("click", () => setRunning(!state.running));
+        burstBtn.addEventListener("click", () => {
+            spawnBurst();
+            scheduleHudAutoHide();
+        });
+
+        hudLauncher.addEventListener("click", () => {
+            showHud();
+            scheduleHudAutoHide();
+        });
+
+        hudCloseBtn.addEventListener("click", () => {
+            hideHud();
+        });
+
+        hud.addEventListener("pointerenter", () => {
+            if (hudHideTimer) {
+                clearTimeout(hudHideTimer);
+            }
+        });
+
+        hud.addEventListener("pointerleave", () => {
+            scheduleHudAutoHide();
+        });
+
+        document.addEventListener("pointerdown", () => {
+            if (!hud.classList.contains("collapsed")) {
+                scheduleHudAutoHide();
+            }
+        });
+
+        document.addEventListener("keydown", (event) => {
+            if (event.key.toLowerCase() === "p") {
+                setRunning(!state.running);
+                return;
+            }
+
+            if (event.key === "Escape") {
+                hideHud();
+                return;
+            }
+
+            if (hud.classList.contains("collapsed") && (event.key === "h" || event.key === "H")) {
+                showHud();
+            }
+
+            scheduleHudAutoHide();
+        });
+
+        window.addEventListener("resize", resize);
+
+        addLog("TIER-1 CONTROL PLANE INITIALIZED");
+        addLog("BGP SESSIONS NOMINAL");
+        setInterval(() => addLog(), 2200);
+
+        resize();
+        scheduleHudAutoHide();
+        requestAnimationFrame(animate);
+    </script>
 </body>
 </html>
