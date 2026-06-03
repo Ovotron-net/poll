@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -327,6 +328,7 @@
         }
     </style>
 </head>
+
 <body>
     <section class="hud collapsed" aria-label="Tier-1 network telemetry">
         <div class="hud-header">
@@ -374,7 +376,29 @@
         Your browser does not support HTML5 canvas.
     </canvas>
 
-    <img class="brand-watermark" src="ovotron.png" alt="" aria-hidden="true" />
+    <div class="logo-wrap">
+        <svg class="brand-watermark" viewBox="0 0 400 120" xmlns="http://www.w3.org/2000/svg">
+
+            <svg viewBox="0 0 926 684" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+                        <feGaussianBlur stdDeviation="8" />
+                    </filter>
+                </defs>
+
+                <rect width="926" height="684" fill="#020303" />
+
+                <!-- subtle dark rounded shadow under the logo -->
+                <rect x="293" y="374" width="340" height="45" rx="23" fill="#000" opacity="0.45"
+                    filter="url(#softShadow)" />
+
+                <!-- OVOTRON vector lettering -->
+                <path fill="#e6eae2" fill-rule="evenodd"
+                    d="M194 284L179 291L169 301L163 317L163 329L165 337L172 349L180 356L188 360L200 363L212 363L221 361L234 354L241 347L246 338L248 331L248 315L246 308L241 299L228 288L212 283Z M365 285L353 291L345 299L339 310L337 325L340 339L344 346L353 355L362 360L374 363L386 363L398 360L407 355L416 346L420 339L423 327L423 319L420 307L416 300L407 291L398 286L386 283L374 283Z M615 284L601 290L589 302L584 316L585 335L592 348L598 354L611 361L620 363L633 363L644 360L656 353L661 348L667 337L669 330L669 316L667 309L660 297L652 290L644 286L632 283Z M250 285L271 335L282 310L273 285Z M336 285L315 286L283 361L304 361Z M427 285L427 301L451 302L451 361L472 361L472 302L496 301L496 285Z M505 285L505 301L544 301L548 303L553 309L553 317L546 324L505 325L505 361L526 361L527 341L539 341L553 361L575 361L559 338L569 330L573 323L574 306L570 297L561 289L549 285Z M682 285L683 296L736 360L755 361L755 353L700 285Z M735 285L735 299L755 323L755 285Z M202 300L209 300L217 303L224 310L227 317L227 330L220 341L210 346L202 346L193 342L186 334L184 327L184 319L188 309L196 302Z M376 300L384 300L393 304L399 311L402 320L401 331L398 337L390 344L384 346L376 346L370 344L363 338L359 330L358 322L361 311L366 305Z M623 300L630 300L638 303L644 309L648 318L648 328L645 336L638 343L630 346L623 346L615 343L608 336L605 329L605 317L608 310L615 303Z M682 323L682 361L702 361L702 348Z" />
+            </svg>
+
+        </svg>
+    </div>
 
     <script>
         const canvas = document.getElementById("canvas");
@@ -680,4 +704,5 @@
         requestAnimationFrame(animate);
     </script>
 </body>
+
 </html>
