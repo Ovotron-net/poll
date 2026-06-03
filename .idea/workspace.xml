@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="5b3ff5b0-6803-470b-9bc2-2debd8d3c15b" name="Changes" comment="Add initial implementation of cybersecurity training poll page and configuration files" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CopilotPersistence">
+    <persistenceIdMap>
+      <entry key="_C:/Users/terti/git_code/poll" value="3Ee5VgqJow0JJE4A0NfnROIrejn" />
+    </persistenceIdMap>
+  </component>
+  <component name="EmbeddingIndexingInfo">
+    <option name="cachedIndexableFilesCount" value="10" />
+    <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitToolBoxStore">
+    <option name="recentBranches">
+      <RecentBranches>
+        <option name="branchesForRepo">
+          <list>
+            <RecentBranchesForRepo>
+              <option name="branches">
+                <list>
+                  <RecentBranch>
+                    <option name="branchName" value="ovotron.net" />
+                    <option name="lastUsedInstant" value="1780527075" />
+                  </RecentBranch>
+                  <RecentBranch>
+                    <option name="branchName" value="master" />
+                    <option name="lastUsedInstant" value="1780527074" />
+                  </RecentBranch>
+                </list>
+              </option>
+              <option name="repositoryRootUrl" value="file://$PROJECT_DIR$" />
+            </RecentBranchesForRepo>
+          </list>
+        </option>
+      </RecentBranches>
+    </option>
+  </component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/Ovotron-net/poll.git",
+    "accountId": "089cff41-82d5-42d8-b265-cae29c8cf6be"
+  }
+}]]></component>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
+  <component name="NextEditCompletionFeaturesState">
+    <decayedCancelled>
+      <entry key="MS100" value="1.0" />
+      <entry key="MS500" value="1.0000003425686" />
+      <entry key="S2" value="1.0377054346392707" />
+      <entry key="S5" value="1.4055740653385325" />
+      <entry key="S10" value="1.9063498526258051" />
+      <entry key="S30" value="3.0071870004190777" />
+      <entry key="S60" value="4.2645159180953645" />
+      <entry key="M2" value="5.61105317676139" />
+      <entry key="M5" value="6.874431781593299" />
+      <entry key="M10" value="7.403990930151961" />
+      <entry key="M15" value="7.5948633167058235" />
+      <entry key="M30" value="7.793423948126827" />
+      <entry key="H1" value="7.895689051502453" />
+      <entry key="H2" value="7.947586121778036" />
+      <entry key="H4" value="7.973728122619845" />
+      <entry key="D1" value="7.995612305793377" />
+      <entry key="W1" value="7.9993729645826335" />
+    </decayedCancelled>
+    <decayedSelected>
+      <entry key="MS100" value="0.0" />
+      <entry key="MS500" value="0.0" />
+      <entry key="S2" value="0.0" />
+      <entry key="S5" value="0.0" />
+      <entry key="S10" value="0.0" />
+      <entry key="S30" value="0.0" />
+      <entry key="S60" value="0.0" />
+      <entry key="M2" value="0.0" />
+      <entry key="M5" value="0.0" />
+      <entry key="M10" value="0.0" />
+      <entry key="M15" value="0.0" />
+      <entry key="M30" value="0.0" />
+      <entry key="H1" value="0.0" />
+      <entry key="H2" value="0.0" />
+      <entry key="H4" value="0.0" />
+      <entry key="D1" value="0.0" />
+      <entry key="W1" value="0.0" />
+    </decayedSelected>
+    <decayedShown>
+      <entry key="MS100" value="0.9460576467255959" />
+      <entry key="MS500" value="0.9889712559976508" />
+      <entry key="S2" value="1.0348484845846544" />
+      <entry key="S5" value="1.4040778008324495" />
+      <entry key="S10" value="1.9053565270426323" />
+      <entry key="S30" value="3.0065043655358124" />
+      <entry key="S60" value="4.263816277796382" />
+      <entry key="M2" value="5.610478627160125" />
+      <entry key="M5" value="6.874111416694084" />
+      <entry key="M10" value="7.403811158064701" />
+      <entry key="M15" value="7.594738712342923" />
+      <entry key="M30" value="7.793359159195483" />
+      <entry key="H1" value="7.895656014205773" />
+      <entry key="H2" value="7.947569439708455" />
+      <entry key="H4" value="7.973719740386056" />
+      <entry key="D1" value="7.995610903002947" />
+      <entry key="W1" value="7.999372764042764" />
+    </decayedShown>
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 3,
+  &quot;fromUser&quot;: false
+}</component>
+  <component name="ProjectId" id="3Ee5VgqJow0JJE4A0NfnROIrejn" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
+    "ignore.virus.scanning.warn.message": "true",
+    "javascript.preferred.runtime.type.id": "node",
+    "junie.onboarding.icon.badge.shown": "true",
+    "last_opened_file_path": "C:/Users/terti/git_code/poll",
+    "multi.workspaceId": "c61ee0d30c223106",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "to.speed.mode.migration.done": "true",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-31caf2ab9e3c-JavaScript-WS-261.24374.125" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="5b3ff5b0-6803-470b-9bc2-2debd8d3c15b" name="Changes" comment="" />
+      <created>1780526221493</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1780526221493</updated>
+      <workItem from="1780526224505" duration="137000" />
+      <workItem from="1780526381035" duration="736000" />
+    </task>
+    <task id="LOCAL-00001" summary="Add initial implementation of cybersecurity training poll page and configuration files">
+      <option name="closed" value="true" />
+      <created>1780526925926</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1780526925926</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Add initial implementation of cybersecurity training poll page and configuration files" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add initial implementation of cybersecurity training poll page and configuration files" />
+  </component>
+</project>
