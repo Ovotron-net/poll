@@ -46,4 +46,4 @@ Then visit `http://localhost:8080`.
 
 ## License
 
-© Ovotron-net. All rights reserved.
+© Ovotron.net. All rights reserved.
