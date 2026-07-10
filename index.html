@@ -10,7 +10,6 @@
     <link rel="manifest" href="/site.webmanifest">
     <title>OVOTRON</title>
     <style>
-    <style>
         * {
             margin: 0;
             padding: 0;
@@ -22,7 +21,12 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
-            background: #010105;
+            background:
+                radial-gradient(circle at 18% 15%, rgba(49, 255, 199, 0.15), transparent 35%),
+                radial-gradient(circle at 80% 78%, rgba(255, 184, 112, 0.12), transparent 30%),
+                linear-gradient(155deg, var(--bg-1), var(--bg-0) 56%);
+            font-family: "Space Mono", "Consolas", "Courier New", monospace;
+            color: var(--text);
         }
 
         canvas {
