@@ -109,7 +109,7 @@ Keyboard shortcuts: `P` = pause/resume scan · `Escape` = close HUD · `H` = ope
 
 ### Brand mark
 
-The OVOTRON logotype is an **inline SVG** inside `<div class="logo-wrap">`. There is no external image file involved. Do not substitute an `<img src="ovotron.png">`.
+The OVOTRON logotype is an **inline SVG** inside `<div class="logo-wrap">`. There is no external image file involved. Do not substitute an `<img src="ovotron.png">`. (The README's asset table lists `ovotron.png` — this is stale; the file is not referenced by the HTML.)
 
 ### Color system
 
