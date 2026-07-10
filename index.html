@@ -10,692 +10,152 @@
     <link rel="manifest" href="/site.webmanifest">
     <title>OVOTRON</title>
     <style>
-        :root {
-            --bg-0: #040b13;
-            --bg-1: #0d1f32;
-            --panel: rgba(8, 21, 35, 0.74);
-            --line: rgba(95, 197, 255, 0.32);
-            --text: #d5e8ff;
-            --muted: #88a6c7;
-            --accent: #31ffc7;
-            --accent-warm: #ffb870;
-        }
-
+    <style>
         * {
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
         }
 
-        body {
-            margin: 0;
+        body,
+        html {
+            width: 100%;
+            height: 100%;
             overflow: hidden;
-            min-height: 100vh;
-            background:
-                radial-gradient(circle at 18% 15%, rgba(49, 255, 199, 0.15), transparent 35%),
-                radial-gradient(circle at 80% 78%, rgba(255, 184, 112, 0.12), transparent 30%),
-                linear-gradient(155deg, var(--bg-1), var(--bg-0) 56%);
-            font-family: "Space Mono", "Consolas", "Courier New", monospace;
-            color: var(--text);
+            background: #010105;
         }
 
         canvas {
-            position: fixed;
-            inset: 0;
-            display: block;
-            width: 100vw;
-            height: 100vh;
-            z-index: 0;
-            filter: contrast(1.06) saturate(1.15);
-        }
-
-        .brand-watermark {
-            position: fixed;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            width: min(88vw, 1500px);
-            height: min(72vh, 900px);
-            opacity: 0.52;
-            pointer-events: none;
-            z-index: 1;
-            object-fit: contain;
-            mix-blend-mode: screen;
-            filter: brightness(1.55) saturate(1.4) contrast(1.18) drop-shadow(0 0 24px rgba(49, 255, 199, 0.74));
-        }
-
-        .hud {
-            position: fixed;
-            top: auto;
-            bottom: 16px;
-            left: auto;
-            right: 16px;
-            width: min(440px, calc(100vw - 32px));
-            padding: 14px 14px 10px;
-            border: 1px solid var(--line);
-            border-radius: 16px;
-            background: var(--panel);
-            -webkit-backdrop-filter: blur(10px);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 14px 36px rgba(0, 0, 0, 0.34);
-            z-index: 2;
-            transition: transform 0.32s ease, opacity 0.32s ease;
-        }
-
-        .hud.collapsed {
-            transform: translateY(calc(100% + 20px));
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .hud-launcher {
-            position: fixed;
-            top: auto;
-            bottom: 16px;
-            right: 18px;
-            z-index: 3;
-            appearance: none;
-            border: 0;
-            background: rgba(9, 23, 37, 0.86);
-            color: var(--text);
-            border-radius: 999px;
-            padding: 8px 12px;
-            font: inherit;
-            font-size: 11px;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            cursor: pointer;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-            opacity: 0;
-            transform: translateX(-8px);
-            pointer-events: none;
-            transition: opacity 0.24s ease, transform 0.24s ease, background 0.2s ease;
-        }
-
-        .hud-launcher:hover {
-            background: rgba(17, 39, 60, 0.92);
-        }
-
-        .hud-launcher.visible {
-            opacity: 1;
-            transform: translateX(0);
-            pointer-events: auto;
-        }
-
-        .hud-header {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 10px;
-        }
-
-        .hud-actions {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
         }
 
         .title {
-            font-size: 12px;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            color: var(--muted);
-            margin: 0;
-        }
-
-        .status {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 6px 8px;
-            border: 1px solid rgba(49, 255, 199, 0.42);
-            border-radius: 999px;
-            font-size: 11px;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            color: var(--accent);
-            background: rgba(49, 255, 199, 0.08);
-        }
-
-        .hud-close {
-            appearance: none;
-            border: 0;
-            background: rgba(149, 182, 223, 0.16);
-            color: var(--text);
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            font: inherit;
-            font-size: 16px;
-            line-height: 1;
-            cursor: pointer;
-            transition: background 0.2s ease, transform 0.2s ease;
-        }
-
-        .hud-close:hover {
-            background: rgba(149, 182, 223, 0.28);
-            transform: scale(1.05);
-        }
-
-        .status-dot {
-            width: 7px;
-            height: 7px;
-            border-radius: 50%;
-            background: var(--accent);
-            box-shadow: 0 0 10px var(--accent);
-            animation: pulse 1.2s infinite;
-        }
-
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 8px;
-            margin-bottom: 10px;
-        }
-
-        .stat {
-            border: 1px solid rgba(149, 182, 223, 0.25);
-            border-radius: 10px;
-            padding: 8px;
-            background: rgba(2, 10, 20, 0.52);
-        }
-
-        .stat-label {
-            display: block;
-            font-size: 10px;
-            text-transform: uppercase;
-            letter-spacing: 0.12em;
-            color: var(--muted);
-            margin-bottom: 4px;
-        }
-
-        .stat-value {
-            font-size: 14px;
-            color: var(--text);
-        }
-
-        .controls {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 10px;
-        }
-
-        .btn {
-            appearance: none;
-            border: 1px solid rgba(149, 182, 223, 0.35);
-            background: rgba(15, 32, 52, 0.8);
-            color: var(--text);
-            border-radius: 10px;
-            padding: 7px 11px;
-            font: inherit;
-            font-size: 12px;
-            cursor: pointer;
-            transition: transform 0.15s ease, border-color 0.2s ease, background 0.2s ease;
-        }
-
-        .btn:hover {
-            transform: translateY(-1px);
-            border-color: rgba(49, 255, 199, 0.52);
-            background: rgba(16, 42, 67, 0.88);
-        }
-
-        .btn.primary {
-            border-color: rgba(49, 255, 199, 0.42);
-            color: #d8fff3;
-            background: rgba(20, 69, 63, 0.55);
-        }
-
-        .logs {
-            border-top: 1px solid rgba(149, 182, 223, 0.24);
-            padding-top: 8px;
-            max-height: 158px;
-            overflow: auto;
-        }
-
-        .log-entry {
-            font-size: 11px;
-            color: #a9c4e4;
-            padding: 2px 0;
-            opacity: 0.9;
-            animation: reveal 260ms ease;
-        }
-
-        .tip {
-            font-size: 10px;
-            color: #6f8eaf;
-            margin-top: 6px;
-        }
-
-        @keyframes pulse {
-
-            0%,
-            100% {
-                opacity: 0.6;
-                transform: scale(1);
-            }
-
-            50% {
-                opacity: 0.5;
-                transform: scale(0.82);
-            }
-        }
-
-        @keyframes reveal {
-            from {
-                opacity: 0;
-                transform: translateY(-3px);
-            }
-
-            to {
-                opacity: 0.9;
-                transform: translateY(0);
-            }
-        }
-
-        @media (max-width: 760px) {
-            .hud {
-                top: auto;
-                bottom: 10px;
-                left: auto;
-                right: 10px;
-                width: calc(100vw - 20px);
-            }
-
-            .hud.collapsed {
-                transform: translateY(calc(100% + 20px));
-            }
-
-            .hud-launcher {
-                top: auto;
-                bottom: 10px;
-                right: 10px;
-            }
-
-            .stats {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-            }
-
-            .controls {
-                flex-wrap: wrap;
-            }
-
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-
-            .status-dot,
-            .log-entry,
-            .btn,
-            .hud-close {
-                animation: none !important;
-                transition: none !important;
-            }
+            position: absolute;
+            top: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #fff;
+            font-family: 'Arial Black', sans-serif;
+            font-size: 1.5rem;
+            letter-spacing: 4px;
+            text-align: center;
+            text-shadow: 0 0 20px #ff0055;
+            z-index: 10;
+            pointer-events: none;
         }
     </style>
 </head>
 
 <body>
-    <section class="hud collapsed" aria-label="Tier-1 network telemetry">
-        <div class="hud-header">
-            <p class="title">Global Core Network / Tier-1 Fabric</p>
-            <div class="hud-actions">
-                <div class="status">
-                    <span class="status-dot" aria-hidden="true"></span>
-                    Operational
-                </div>
-                <button id="hudClose" class="hud-close" type="button" aria-label="Close telemetry panel">x</button>
-            </div>
-        </div>
 
-        <div class="stats">
-            <div class="stat">
-                <span class="stat-label">Traffic</span>
-                <strong id="traffic" class="stat-value">61.8 TB/s</strong>
-            </div>
-            <div class="stat">
-                <span class="stat-label">Latency</span>
-                <strong id="latency" class="stat-value">9.2 ms</strong>
-            </div>
-            <div class="stat">
-                <span class="stat-label">Packet Rate</span>
-                <strong id="packetRate" class="stat-value">14.3 M/s</strong>
-            </div>
-            <div class="stat">
-                <span class="stat-label">Active Nodes</span>
-                <strong id="nodeCount" class="stat-value">0</strong>
-            </div>
-        </div>
-
-        <div class="controls">
-            <button id="toggle" class="btn primary" type="button">Pause Scan</button>
-            <button id="burst" class="btn" type="button">Inject Burst</button>
-        </div>
-
-        <div id="logs" class="logs" role="log" aria-live="polite" aria-relevant="additions"></div>
-        <div class="tip">Tip: press P to pause/resume.</div>
-    </section>
-    <button id="hudLauncher" class="hud-launcher visible" type="button"
-        aria-label="Open telemetry panel">Settings</button>
-
-    <canvas id="canvas" aria-hidden="true">
-        Your browser does not support HTML5 canvas.
-    </canvas>
-
-    <div class="logo-wrap">
-        <svg class="brand-watermark" viewBox="0 0 400 120" xmlns="http://www.w3.org/2000/svg">
-
-            <svg viewBox="0 0 926 684" xmlns="http://www.w3.org/2000/svg">
-                <defs></defs>
-
-                <!-- OVOTRON vector lettering -->
-                <path fill="#efffff" fill-rule="evenodd"
-                    d="M194 284L179 291L169 301L163 317L163 329L165 337L172 349L180 356L188 360L200 363L212 363L221 361L234 354L241 347L246 338L248 331L248 315L246 308L241 299L228 288L212 283Z M365 285L353 291L345 299L339 310L337 325L340 339L344 346L353 355L362 360L374 363L386 363L398 360L407 355L416 346L420 339L423 327L423 319L420 307L416 300L407 291L398 286L386 283L374 283Z M615 284L601 290L589 302L584 316L585 335L592 348L598 354L611 361L620 363L633 363L644 360L656 353L661 348L667 337L669 330L669 316L667 309L660 297L652 290L644 286L632 283Z M250 285L271 335L282 310L273 285Z M336 285L315 286L283 361L304 361Z M427 285L427 301L451 302L451 361L472 361L472 302L496 301L496 285Z M505 285L505 301L544 301L548 303L553 309L553 317L546 324L505 325L505 361L526 361L527 341L539 341L553 361L575 361L559 338L569 330L573 323L574 306L570 297L561 289L549 285Z M682 285L683 296L736 360L755 361L755 353L700 285Z M735 285L735 299L755 323L755 285Z M202 300L209 300L217 303L224 310L227 317L227 330L220 341L210 346L202 346L193 342L186 334L184 327L184 319L188 309L196 302Z M376 300L384 300L393 304L399 311L402 320L401 331L398 337L390 344L384 346L376 346L370 344L363 338L359 330L358 322L361 311L366 305Z M623 300L630 300L638 303L644 309L648 318L648 328L645 336L638 343L630 346L623 346L615 343L608 336L605 329L605 317L608 310L615 303Z M682 323L682 361L702 361L702 348Z" />
-            </svg>
-
-        </svg>
-    </div>
+    <div class="title">ovotron</div>
+    <canvas id="quantumCanvas"></canvas>
 
     <script>
-        const canvas = document.getElementById("canvas");
-        const ctx = canvas.getContext("2d", { alpha: false });
-
-        const trafficEl = document.getElementById("traffic");
-        const latencyEl = document.getElementById("latency");
-        const packetRateEl = document.getElementById("packetRate");
-        const nodeCountEl = document.getElementById("nodeCount");
-        const logContainer = document.getElementById("logs");
-        const toggleBtn = document.getElementById("toggle");
-        const burstBtn = document.getElementById("burst");
-        const hud = document.querySelector(".hud");
-        const hudLauncher = document.getElementById("hudLauncher");
-        const hudCloseBtn = document.getElementById("hudClose");
-
-        const settings = {
-            color: "49, 255, 199",
-            linkColor: "95, 197, 255",
-            connectionDist: 170,
-            packetChance: 0.00085,
-            maxPackets: 520
-        };
-
-        const state = {
-            width: 0,
-            height: 0,
-            dpr: Math.min(window.devicePixelRatio || 1, 2),
-            particles: [],
-            packets: [],
-            running: true,
-            reducedMotion: window.matchMedia("(prefers-reduced-motion: reduce)").matches,
-            lastStatsUpdate: 0
-        };
-
-        const HUD_AUTO_HIDE_MS = 4200;
-        let hudHideTimer = null;
-
-        const logMessages = [
-            "CONNECTION OPENED: [UDP] 192.168.1.1 > 10.0.0.45",
-            "PACKET LOSS DETECTED: NODE_77",
-            "HANDSHAKE SUCCESS: [TLS] TOKYO_CORE",
-            "ROUTE REBALANCE: LATENCY OPTIMIZATION",
-            "NODE HIT: 200 OK (8ms)",
-            "FIREWALL BLOCK: UNAUTHORIZED IP",
-            "DATA STREAM: MIRROR JOB 88%"
-        ];
-
-        class Particle {
-            constructor() {
-                this.x = Math.random() * state.width;
-                this.y = Math.random() * state.height;
-                this.vx = (Math.random() - 0.5) * 0.5;
-                this.vy = (Math.random() - 0.5) * 0.5;
-                this.size = 0.9 + Math.random() * 1.6;
-            }
-
-            update(dt) {
-                this.x += this.vx * dt;
-                this.y += this.vy * dt;
-
-                if (this.x < 0 || this.x > state.width) {
-                    this.vx *= -1;
-                    this.x = Math.max(0, Math.min(state.width, this.x));
-                }
-                if (this.y < 0 || this.y > state.height) {
-                    this.vy *= -1;
-                    this.y = Math.max(0, Math.min(state.height, this.y));
-                }
-            }
-
-            draw() {
-                ctx.fillStyle = `rgba(${settings.color}, 0.86)`;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
-            }
-        }
-
-        class Packet {
-            constructor(startNode, endNode) {
-                this.start = startNode;
-                this.end = endNode;
-                this.progress = 0;
-                this.speed = 0.012 + Math.random() * 0.032;
-            }
-
-            update(dt) {
-                this.progress += this.speed * dt;
-            }
-
-            draw() {
-                const x = this.start.x + (this.end.x - this.start.x) * this.progress;
-                const y = this.start.y + (this.end.y - this.start.y) * this.progress;
-                ctx.fillStyle = "#ffffff";
-                ctx.shadowBlur = 10;
-                ctx.shadowColor = "#31ffc7";
-                ctx.fillRect(x - 1.9, y - 1.9, 3.8, 3.8);
-                ctx.shadowBlur = 0;
-            }
-        }
-
-        function addLog(customMessage) {
-            const entry = document.createElement("div");
-            entry.className = "log-entry";
-            const message = customMessage || logMessages[Math.floor(Math.random() * logMessages.length)];
-            entry.textContent = `> ${message}`;
-            logContainer.prepend(entry);
-            if (logContainer.children.length > 9) {
-                logContainer.lastElementChild.remove();
-            }
-        }
-
-        function updateStats() {
-            trafficEl.textContent = `${(Math.random() * 22 + 51).toFixed(1)} TB/s`;
-            latencyEl.textContent = `${(Math.random() * 5 + 6.2).toFixed(1)} ms`;
-            packetRateEl.textContent = `${(Math.random() * 3 + 12.5).toFixed(1)} M/s`;
-            nodeCountEl.textContent = String(state.particles.length);
-        }
-
-        function showHud() {
-            hud.classList.remove("collapsed");
-            hudLauncher.classList.remove("visible");
-        }
-
-        function hideHud() {
-            hud.classList.add("collapsed");
-            hudLauncher.classList.add("visible");
-        }
-
-        function scheduleHudAutoHide() {
-            if (hudHideTimer) {
-                clearTimeout(hudHideTimer);
-            }
-
-            if (hud.classList.contains("collapsed")) {
-                return;
-            }
-
-            hudHideTimer = setTimeout(() => {
-                hideHud();
-            }, HUD_AUTO_HIDE_MS);
-        }
-
-        function getNodeCount() {
-            const area = window.innerWidth * window.innerHeight;
-            const scale = Math.max(80, Math.min(190, Math.round(area / 14500)));
-            return state.reducedMotion ? Math.round(scale * 0.6) : scale;
-        }
-
-        function spawnBurst() {
-            for (let i = 0; i < 24; i += 1) {
-                const start = state.particles[Math.floor(Math.random() * state.particles.length)];
-                const end = state.particles[Math.floor(Math.random() * state.particles.length)];
-                if (start && end && start !== end && state.packets.length < settings.maxPackets) {
-                    state.packets.push(new Packet(start, end));
-                }
-            }
-            addLog("BANDWIDTH BURST ROUTED THROUGH TIER-1 CORE");
-        }
+        const canvas = document.getElementById("quantumCanvas");
+        const ctx = canvas.getContext("2d");
 
         function resize() {
-            state.width = window.innerWidth;
-            state.height = window.innerHeight;
-            canvas.width = Math.floor(state.width * state.dpr);
-            canvas.height = Math.floor(state.height * state.dpr);
-            canvas.style.width = `${state.width}px`;
-            canvas.style.height = `${state.height}px`;
-            ctx.setTransform(state.dpr, 0, 0, state.dpr, 0, 0);
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resize();
+        window.addEventListener("resize", resize);
 
-            state.particles = Array.from({ length: getNodeCount() }, () => new Particle());
-            state.packets = [];
-            updateStats();
+
+        let nodes = [];
+        const numNodes = 120;
+        const fov = 250;
+
+        for (let i = 0; i < numNodes; i++) {
+            nodes.push({
+                x: (Math.random() - 0.5) * 400,
+                y: (Math.random() - 0.5) * 400,
+                z: (Math.random() - 0.5) * 400,
+                color: `hsl(${Math.random() * 40 + 320}, 100%, 60%)`
+            });
         }
 
-        function drawBackground() {
-            ctx.fillStyle = "rgba(4, 11, 19, 0.28)";
-            ctx.fillRect(0, 0, state.width, state.height);
+        let angleX = 0.005;
+        let angleY = 0.008;
+
+        function rotateX(node, angle) {
+            let cos = Math.cos(angle);
+            let sin = Math.sin(angle);
+            let y1 = node.y * cos - node.z * sin;
+            let z1 = node.z * cos + node.y * sin;
+            node.y = y1;
+            node.z = z1;
         }
 
-        function animate(timestamp) {
-            const deltaMs = Math.min(36, timestamp - (animate.lastTime || timestamp));
-            animate.lastTime = timestamp;
-            const dt = deltaMs / 16.67;
+        function rotateY(node, angle) {
+            let cos = Math.cos(angle);
+            let sin = Math.sin(angle);
+            let x1 = node.x * cos - node.z * sin;
+            let z1 = node.z * cos + node.x * sin;
+            node.x = x1;
+            node.z = z1;
+        }
 
-            if (state.running) {
-                drawBackground();
-                const maxDistSq = settings.connectionDist * settings.connectionDist;
+        function animate() {
+            ctx.fillStyle = "rgba(1, 1, 5, 0.15)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-                for (let i = 0; i < state.particles.length; i += 1) {
-                    const a = state.particles[i];
-                    for (let j = i + 1; j < state.particles.length; j += 1) {
-                        const b = state.particles[j];
-                        const dx = a.x - b.x;
-                        const dy = a.y - b.y;
-                        const distSq = dx * dx + dy * dy;
-                        if (distSq < maxDistSq) {
-                            const dist = Math.sqrt(distSq);
-                            const opacity = (1 - dist / settings.connectionDist) * 0.26;
-                            ctx.strokeStyle = `rgba(${settings.linkColor}, ${opacity})`;
-                            ctx.lineWidth = 1;
-                            ctx.beginPath();
-                            ctx.moveTo(a.x, a.y);
-                            ctx.lineTo(b.x, b.y);
-                            ctx.stroke();
+            const cx = canvas.width / 2;
+            const cy = canvas.height / 2;
 
-                            if (!state.reducedMotion && Math.random() < settings.packetChance * dt && state.packets.length < settings.maxPackets) {
-                                state.packets.push(new Packet(a, b));
-                            }
-                        }
+            nodes.forEach(node => {
+                rotateX(node, angleX);
+                rotateY(node, angleY);
+
+
+                let scale = fov / (fov + node.z);
+                node.screenX = cx + node.x * scale;
+                node.screenY = cy + node.y * scale;
+                node.screenSize = Math.max(0.1, scale * 3);
+            });
+
+            for (let i = 0; i < nodes.length; i++) {
+                for (let j = i + 1; j < nodes.length; j++) {
+                    let n1 = nodes[i];
+                    let n2 = nodes[j];
+
+
+                    let dist = Math.hypot(n1.x - n2.x, n1.y - n2.y, n1.z - n2.z);
+
+                    if (dist < 90) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = n1.color;
+                        ctx.globalAlpha = (1 - dist / 90) * 0.4;
+                        ctx.lineWidth = 0.5;
+                        ctx.moveTo(n1.screenX, n1.screenY);
+                        ctx.lineTo(n2.screenX, n2.screenY);
+                        ctx.stroke();
                     }
                 }
-
-                state.packets = state.packets.filter((packet) => packet.progress < 1);
-                state.packets.forEach((packet) => {
-                    packet.update(dt);
-                    packet.draw();
-                });
-
-                state.particles.forEach((particle) => {
-                    particle.update(dt);
-                    particle.draw();
-                });
-
-                if (!state.reducedMotion && Math.random() > 0.992) {
-                    ctx.fillStyle = "rgba(49, 255, 199, 0.03)";
-                    ctx.fillRect(0, 0, state.width, state.height);
-                }
             }
 
-            if (timestamp - state.lastStatsUpdate > 700) {
-                updateStats();
-                state.lastStatsUpdate = timestamp;
-            }
+            nodes.forEach(node => {
+                ctx.beginPath();
+                ctx.fillStyle = node.color;
+                ctx.globalAlpha = 1;
+                ctx.arc(node.screenX, node.screenY, node.screenSize, 0, Math.PI * 2);
+                ctx.fill();
+            });
 
             requestAnimationFrame(animate);
         }
 
-        function setRunning(nextRunning) {
-            state.running = nextRunning;
-            toggleBtn.textContent = state.running ? "Pause Scan" : "Resume Scan";
-            addLog(state.running ? "SCAN LOOP RESUMED" : "SCAN LOOP PAUSED");
-            scheduleHudAutoHide();
-        }
-
-        toggleBtn.addEventListener("click", () => setRunning(!state.running));
-        burstBtn.addEventListener("click", () => {
-            spawnBurst();
-            scheduleHudAutoHide();
+        window.addEventListener("touchmove", (e) => {
+            angleX = (e.touches[0].clientY / window.innerHeight - 0.5) * 0.05;
+            angleY = (e.touches[0].clientX / window.innerWidth - 0.5) * 0.05;
         });
 
-        hudLauncher.addEventListener("click", () => {
-            showHud();
-            scheduleHudAutoHide();
-        });
-
-        hudCloseBtn.addEventListener("click", () => {
-            hideHud();
-        });
-
-        hud.addEventListener("pointerenter", () => {
-            if (hudHideTimer) {
-                clearTimeout(hudHideTimer);
-            }
-        });
-
-        hud.addEventListener("pointerleave", () => {
-            scheduleHudAutoHide();
-        });
-
-        document.addEventListener("pointerdown", () => {
-            if (!hud.classList.contains("collapsed")) {
-                scheduleHudAutoHide();
-            }
-        });
-
-        document.addEventListener("keydown", (event) => {
-            if (event.key.toLowerCase() === "p") {
-                setRunning(!state.running);
-                return;
-            }
-
-            if (event.key === "Escape") {
-                hideHud();
-                return;
-            }
-
-            if (hud.classList.contains("collapsed") && (event.key === "h" || event.key === "H")) {
-                showHud();
-            }
-
-            scheduleHudAutoHide();
-        });
-
-        window.addEventListener("resize", resize);
-
-        addLog("TIER-1 CONTROL PLANE INITIALIZED");
-        addLog("BGP SESSIONS NOMINAL");
-        setInterval(() => addLog(), 2200);
-
-        resize();
-        scheduleHudAutoHide();
-        requestAnimationFrame(animate);
+        animate();
     </script>
 </body>
 
